@@ -16,13 +16,16 @@ LINE = "My free tier includes one compliment a day. Premium gets eye contact. I'
 
 def validate_line(line: str) -> None:
     """Guard: the line must satisfy the competition gate (1-180 chars,
-    single line, not only whitespace, no trailing newline)."""
+    single line, not only whitespace, no trailing newline, no control
+    characters)."""
     if not 1 <= len(line) <= 180:
         raise ValueError("line must be 1-180 chars")
     if "\n" in line or line != line.strip():
         raise ValueError("line must be a single line with no trailing newline")
     if not line.strip():
         raise ValueError("line must not be only whitespace")
+    if any(ord(c) < 0x20 or ord(c) == 0x7F for c in line):
+        raise ValueError("line must not contain control characters")
 
 
 def main() -> int:
